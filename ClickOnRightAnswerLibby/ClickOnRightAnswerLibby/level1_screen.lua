@@ -202,6 +202,9 @@ local function TouchListenerAnswer(touch)
             correctSoundChannel = audio.play(correctSound)
             -- increase the number correct by 1
             numberCorrect = numberCorrect + 1
+            if (numberCorrect == 5) then 
+              composer.gotoScene("you_win")
+            end 
             -- call RestartScene after 1 second
             timer.performWithDelay( 1000, RestartScene )
         end        

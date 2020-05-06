@@ -243,6 +243,12 @@ local function YouWinTransitionLevel1( )
     composer.gotoScene("you_win", {effect = "fade", time = 500})
 end
 
+-- ADDED THIS FUNCTION TO GO TO YOU LOSE SCREEN 
+-- Transitioning Function to YouLose screen
+local function YouLoseTransitionLevel1( )
+    composer.gotoScene("you_lose", {effect = "fade", time = 500})
+end
+
 -- Function to Restart Level 1
 local function RestartLevel1()
     DisplayQuestion()
@@ -251,7 +257,7 @@ local function RestartLevel1()
 end
 
 -- Function to Check User Input
---ADDED ALL OF THIS 
+-- ADDED ALL OF THIS 
 local function CheckUserAnswerInput()
     -- if the user gets the correct answer
     if (correctAnswer == userAnswer) then 
@@ -266,7 +272,7 @@ local function CheckUserAnswerInput()
             YouLoseTransitionLevel()
         else
             timer.performWithDelay(1600, RestartLevel1)
-        and 
+        end 
     end        
 end
 

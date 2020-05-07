@@ -27,14 +27,15 @@ local scene = composer.newScene( sceneName )
 --LOCAL SOUNDS
 -----------------------------------------------------------------------------------------
 
-local booSound = audio.loadSound("Sounds/")
+local booSound = audio.loadSound("Sounds/wrong.mp3")
 local booSoundChannel
 
-local correctSound = audio.loadSound("Sounds/")
+local correctSound = audio.loadSound("Sounds/woo.mp3")
 local correctSoundChannel
 
-local bkgMusic = audio.loadSound("Sounds/", {channel = 1, loops = -1})
+local bkgMusic = audio.loadSound("Sounds/music.mp3", {channel = 1, loops = -1})
 local bkgMusicChannel
+bkgMusicChannel = audio.play(bkgMusic)
 
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
@@ -87,8 +88,12 @@ local alternateAnswerBox3PreviousX
 local userAnswerBoxPlaceholder
 
 -- sound effects
-local correctSound
-local booSound
+--local correctSound
+--local booSound
+
+--create variables for points 
+local numCorrect = 0
+local numWrong = 0
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -105,6 +110,7 @@ local function DisplayQuestion()
 
     --calculate answer
     correctAnswer = randomNumber1 + randomNumber2
+    print ("correctAnswer = " .. correctAnswer)
 
     --change question text in relation to answer
     questionText.text = randomNumber1 .. " + " .. randomNumber2 .. " = " 
@@ -127,14 +133,17 @@ local function DetermineAlternateAnswers()
     -- generate incorrect answer and set it in the textbox
     alternateAnswer1 = correctAnswer + math.random(3, 5)
     alternateAnswerBox1.text = alternateAnswer1
+    print ("wAnswer1 = " .. alternateAnswer1)
 
     -- generate incorrect answer and set it in the textbox
     alternateAnswer2 = correctAnswer - math.random(1, 2)
     alternateAnswerBox2.text = alternateAnswer2
+    print ("wAnswer2 = " .. alternateAnswer2)
 
     -- generate incorrect answer and set it in the textbox
     alternateAnswer3 = correctAnswer - math.random(6, 8)
     alternateAnswerBox3.text = alternateAnswer3
+    print ("wAnswer3 = " .. alternateAnswer3)
 
 -------------------------------------------------------------------------------------------
 -- RESET ALL X POSITIONS OF ANSWER BOXES (because the x-position is changed when it is
@@ -145,6 +154,10 @@ local function DetermineAlternateAnswers()
     alternateAnswerBox2.x = display.contentWidth * 0.9
     alternateAnswerBox3.x = display.contentWidth * 0.9
 
+    print("answerbox.x = " .. answerbox.x)
+    print("alternateAnswerBox1.x = " .. alternateAnswerBox1.x)
+    print("alternateAnswerBox2.x = " .. alternateAnswerBox2.x)
+    print("alternateAnswerBox3.x = " .. alternateAnswerBox3.x)
 
 
 end
@@ -156,20 +169,25 @@ local function PositionAnswers()
     --ROMDOMLY SELECT ANSWER BOX POSITIONS
     -----------------------------------------------------------------------------------------
     randomPosition = math.random(1,4)
+    print ("randomPosition = " .. randomPosition)
 
     -- random position 1
     if (randomPosition == 1) then
         -- set the new y-positions of each of the answers
         answerbox.y = display.contentHeight * 0.4
+        print("answerbox.y = ".. answerbox.y)
 
         --alternateAnswerBox3
-        alternateAnswerBox3.y = display.contentHeight *85
+        alternateAnswerBox3.y = display.contentHeight * 0.85
+        print("alternateAnswerBox3.y = ".. alternateAnswerBox3.y)
 
         --alternateAnswerBox2
         alternateAnswerBox2.y = display.contentHeight * 0.70
+        print("alternateAnswerBox2.y = ".. alternateAnswerBox2.y)
 
         --alternateAnswerBox1
         alternateAnswerBox1.y = display.contentHeight * 0.55
+        print("alternateAnswerBox1.y = ".. alternateAnswerBox1.y)
 
         ---------------------------------------------------------
         --remembering their positions to return the answer in case it's wrong
@@ -185,6 +203,7 @@ local function PositionAnswers()
 
         --alternateAnswerBox3
         alternateAnswerBox3.y = display.contentHeight * 0.2
+        print("alternateAnswerBox3.y = ".. alternateAnswerBox3.y)
         
         --alternateAnswerBox2
         alternateAnswerBox2.y = display.contentHeight * 0.4
@@ -204,6 +223,7 @@ local function PositionAnswers()
 
         --alternateAnswerBox3
         alternateAnswerBox3.y = display.contentHeight * 0.4
+        print("alternateAnswerBox3.y = ".. alternateAnswerBox3.y)
 
         --alternateAnswerBox2
         alternateAnswerBox2.y = display.contentHeight * 0.55
@@ -223,6 +243,7 @@ local function PositionAnswers()
 
         --alternateAnswerBox3
         alternateAnswerBox3.y = display.contentHeight * 0.7
+        print("alternateAnswerBox3.y = ".. alternateAnswerBox3.y)
 
         --alternateAnswerBox2
         alternateAnswerBox2.y = display.contentHeight * 0.55
@@ -260,7 +281,10 @@ end
 -- ADDED ALL OF THIS 
 local function CheckUserAnswerInput()
     -- if the user gets the correct answer
-    if (correctAnswer == userAnswer) then 
+    if (correctAnswer == userAnswer) then
+    correctSoundChannel = audio.play(correctSound)
+    print ("CORRECT")
+    numCorrect = numCorrect + 1 
         if (numCorrect == 3) then 
             YouWinTransitionLevel1()
         else
@@ -268,8 +292,11 @@ local function CheckUserAnswerInput()
         end 
     -- otherwise the answer is wrong 
     else 
+        numWrong = numWrong + 1
+        booSoundChannel = audio.play(booSound)
+        print ("BOO")
         if (numWrong == 2) then 
-            YouLoseTransitionLevel()
+            YouLoseTransitionLevel1()
         else
             timer.performWithDelay(1600, RestartLevel1)
         end 
@@ -277,6 +304,7 @@ local function CheckUserAnswerInput()
 end
 
 local function TouchListenerAnswerbox(touch)
+    --print ("TOUCHED")
     --only work if none of the other boxes have been touched
     if (alternateAnswerBox1AlreadyTouched == false) and 
         (alternateAnswerBox2AlreadyTouched == false) and
@@ -308,7 +336,7 @@ local function TouchListenerAnswerbox(touch)
                 answerbox.x = userAnswerBoxPlaceholder.x
                 answerbox.y = userAnswerBoxPlaceholder.y
                 userAnswer = correctAnswer
-
+                
                 -- call the function to check if the user's input is correct or not
                 CheckUserAnswerInput()
 
@@ -348,6 +376,7 @@ local function TouchListenerAnswerBox1(touch)
                 alternateAnswerBox1.y = userAnswerBoxPlaceholder.y
 
                 userAnswer = alternateAnswer1
+                booSoundChannel = audio.play(booSound)
 
                 -- call the function to check if the user's input is correct or not
                 CheckUserAnswerInput()
@@ -387,7 +416,7 @@ local function TouchListenerAnswerBox2(touch)
                 alternateAnswerBox2.x = userAnswerBoxPlaceholder.x
                 alternateAnswerBox2.y = userAnswerBoxPlaceholder.y
                 userAnswer = alternateAnswer2
-
+                booSoundChannel = audio.play(booSound)
                 -- call the function to check if the user's input is correct or not
                 CheckUserAnswerInput()
 
@@ -427,7 +456,7 @@ local function TouchListenerAnswerBox3(touch)
                 alternateAnswerBox3.x = userAnswerBoxPlaceholder.x
                 alternateAnswerBox3.y = userAnswerBoxPlaceholder.y
                 userAnswer = alternateAnswer3
-
+                booSoundChannel = audio.play(booSound)
                 -- call the function to check if the user's input is correct or not
                 CheckUserAnswerInput()
 
@@ -553,12 +582,11 @@ function scene:show( event )
         --play bkgMusic 
         bkgMusicChannel = audio.play(bkgMusic)
 
+
+
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
-        -- ADDED NUMWRONG AND NUMCORRECT 
-        numWrong = 0
-        numCorrect = 0
         RestartLevel1()
         AddAnswerBoxEventListeners() 
 
@@ -588,6 +616,7 @@ function scene:hide( event )
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
         audio.stop(bkgMusicChannel)
+        --audio.stop()
         RemoveAnswerBoxEventListeners()
     end
 

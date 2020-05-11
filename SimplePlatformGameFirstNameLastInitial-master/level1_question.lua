@@ -29,6 +29,16 @@ sceneName = "level1_question"
 local scene = composer.newScene( sceneName )
 
 -----------------------------------------------------------------------------------------
+--SOUNDS
+-----------------------------------------------------------------------------------------
+
+local incorrectSound = audio.loadSound("Sounds/incorrectSound.mp3")
+local incorrectSoundChannel
+
+local correctSound = audio.loadSound("Sounds/correctSound.mp3")
+local correctSoundChannel
+
+-----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
 
@@ -75,7 +85,7 @@ end
 --checking to see if the user pressed the right answer and bring them back to level 1
 local function TouchListenerAnswer(touch)
     userAnswer = answerText.text
-    
+    correctSoundChannel = audio.play(correctSound)
     if (touch.phase == "ended") then
 
         BackToLevel1( )
@@ -86,7 +96,8 @@ end
 --checking to see if the user pressed the right answer and bring them back to level 1
 local function TouchListenerWrongAnswer(touch)
     userAnswer = wrongText1.text
-    
+
+    incorrectSoundChannel = audio.play(incorrectSound)
     if (touch.phase == "ended") then
         
         BackToLevel1( )
@@ -98,7 +109,7 @@ end
 --checking to see if the user pressed the right answer and bring them back to level 1
 local function TouchListenerWrongAnswer2(touch)
     userAnswer = wrongText2.text
-    
+    incorrectSoundChannel = audio.play(incorrectSound)
     if (touch.phase == "ended") then
 
         BackToLevel1( )
@@ -110,7 +121,8 @@ end
 --checking to see if the user pressed the right answer and bring them back to level 1
 local function TouchListenerWrongAnswer3(touch)
     userAnswer = wrongText3.text
-    
+    incorrectSoundChannel = audio.play(incorrectSound)
+
     if (touch.phase == "ended") then
 
         BackToLevel1( )

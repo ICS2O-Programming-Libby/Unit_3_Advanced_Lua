@@ -25,6 +25,10 @@ sceneName = "you_lose"
 -- Creating Scene Object
 local scene = composer.newScene( sceneName )
 
+local loseSound = audio.loadSound("Sounds/cartoon_fail_strings_trumpet.mp3") 
+local loseSoundChannel
+
+
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
@@ -48,6 +52,7 @@ function scene:create( event )
     local sceneGroup = self.view
 
     -- Display background
+    loseSoundChannel = audio.play(loseSound)
     bkg = display.newImage("Images/You Lose.png")
     bkg.x = display.contentCenterX
     bkg.y = display.contentCenterY
@@ -83,6 +88,7 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+        
     end
 
 end

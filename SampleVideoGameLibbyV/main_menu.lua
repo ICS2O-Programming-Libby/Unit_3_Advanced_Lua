@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------------------------
---
 -- main_menu.lua
 -- Created by: Your Name
 -- Date: Month Day, Year
@@ -37,29 +36,78 @@ local playButton
 local creditsButton
 local instructionsButton
 
+local music = audio.loadSound("Sounds/mainMenu.mp3")
+local musicSoundChannel
+
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
+ -- Pre-Setting the Transition options
+    local transitionOptions_ZoomOutInFade = (
+            {
+                effect = "zoomOutInFade", -- The animation it's going to use when transitioning
+                time = 1000, -- How long the transition will take
+            })
+
+ -- The function which transitions to the next screen
+ function Transition_ZoomOutInFade( )
+        composer.gotoScene( "zoomOutInFade Screen", transitionOptions_ZoomOutInFade )
+end
+
+local transitionOptions_ZoomOutInFadeRotate = (
+            {
+                effect = "zoomOutInFadeRotate", -- The animation it's going to use when transitioning
+                time = 1000, -- How long the transition will take
+            })
+
+ -- The function which transitions to the next screen
+ function Transition_ZoomOutInFadeRotate( )
+        composer.gotoScene( "zoomOutInFadeRotate Screen", transitionOptions_ZoomOutInFadeRotate )
+end
+
+local transitionOptions_zoomInOutFadeRotate = (
+            {
+                effect = "zoomInOutFadeRotate", -- The animation it's going to use when transitioning
+                time = 1000, -- How long the transition will take
+            })
+
+ -- The function which transitions to the next screen
+ function Transition_zoomInOutFadeRotate( )
+        composer.gotoScene( "zoomInOutFadeRotate Screen", transitionOptions_zoomInOutFadeRotate )
+end
+
+local transitionOptions_zoomInOutFade = (
+            {
+                effect = "zoomInOutFade", -- The animation it's going to use when transitioning
+                time = 1000, -- How long the transition will take
+            })
+
+ -- The function which transitions to the next screen
+ function Transition_zoomInOutFade( )
+        composer.gotoScene( "zoomInOutFade Screen", transitionOptions_zoomInOutFade )
+end
+
+
+-----------------------------------------------------------------------------------------
+
 -- Creating Transition Function to Credits Page
 local function CreditsTransition( )       
-    composer.gotoScene( "credits_screen", {effect = "flipFadeOutIn", time = 500})
+    composer.gotoScene( "credits_screen", transitionOptions_ZoomOutInFade)
 end 
 -----------------------------------------------------------------------------------------
 
 -- Creating Transition Function to Instructions Page
 local function InstructionsTransition( )       
-    composer.gotoScene( "Instructions_screen", {effect = "flipFadeOutIn", time = 500})
+    composer.gotoScene( "instructions", transitionOptions_ZoomOutInFadeRotate )
 end 
 
 -----------------------------------------------------------------------------------------
 
 -- Creating Transition to Level1 Screen
 local function Level1ScreenTransition( )
-    composer.gotoScene( "level1_screen", {effect = "zoomInOutFade", time = 1000})
+    composer.gotoScene( "level1_screen", transitionOptions_ZoomInOutFade)
 end    
-
--- INSERT LOCAL FUNCTION DEFINITION THAT GOES TO INSTRUCTIONS SCREEN 
 
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
@@ -98,7 +146,7 @@ function scene:create( event )
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight*7/8,
+            y = display.contentHeight*7/8,            
 
             -- Insert the images here
             defaultFile = "Images/Start Button Unpressed.png",
@@ -113,13 +161,14 @@ function scene:create( event )
     -- Creating Credits Button
     creditsButton = widget.newButton( 
         {
+            -- MAKE THE LENGTH 200 AND THE WIDTH 100
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth*7/8,
             y = display.contentHeight*7/8,
 
             -- Insert the images here
-            defaultFile = "Images/Credits Button Unpressed.png",
-            overFile = "Images/Credits Button Pressed.png",
+            defaultFile = "Images/Credits Button Unpressed.png", 200, 100,
+            overFile = "Images/Credits Button Pressed.png",  200, 100,
 
             -- When the button is released, call the Credits transition function
             onRelease = CreditsTransition
@@ -128,15 +177,17 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Creating Instructions Button
-    InstructionsButton = widget.newButton( 
+    instructionsButton = widget.newButton( 
         {
+            -- MAKE THE LENGTH 200 AND THE WIDTH 100
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth*1/8,
             y = display.contentHeight*7/8,
 
+
             -- Insert the images here
-            defaultFile = "Images/Instructions Button Unpressed.png",
-            overFile = "Images/Instructions Button Pressed.png",
+            defaultFile = "Images/Instructions Button Unpressed.png", 200, 100,
+            overFile = "Images/Instructions Button Pressed.png", 200, 100,
 
             -- When the button is released, call the Credits transition function
             onRelease = InstructionsTransition
@@ -154,10 +205,11 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Associating button widgets with this scene
+    --[[
     sceneGroup:insert( playButton )
     sceneGroup:insert( creditsButton )
     sceneGroup:insert( instructionsButton )
-
+    ]]
 end -- function scene:create( event )   
 
 
@@ -171,6 +223,9 @@ function scene:show( event )
     local sceneGroup = self.view
 
     -----------------------------------------------------------------------------------------
+
+    -----------------------------------------------------------------------------------------
+
 
     local phase = event.phase
 
@@ -186,6 +241,9 @@ function scene:show( event )
     -- Example: start timers, begin animation, play audio, etc.
     elseif ( phase == "did" ) then       
         
+    -- make the background music
+    musicSoundChannel = audio.play(music)  
+    -----------------------------------------------------------------------------------------
 
     end
 
@@ -210,10 +268,12 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
 
+  
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
+        audio.stop(musicSoundChannel)
     end
 
 end -- function scene:hide( event )
